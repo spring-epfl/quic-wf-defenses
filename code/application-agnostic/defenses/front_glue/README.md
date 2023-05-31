@@ -1,0 +1,1 @@
+Note: Glue is not used. In practice, it is an efficient defenses that works by gluing pages together. Here we attack single webpages, so Glue don't fit our model.

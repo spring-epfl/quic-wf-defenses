@@ -1,0 +1,7 @@
+127.0.1.1	debian.example.com
+127.0.1.1	vps-66c2a486.vps.ovh.net.novalocal	vps-66c2a486
+127.0.0.1	search.services.mozilla.com
+127.0.0.1	content-signature.cdn.mozilla.net
+127.0.0.1	content-signature-2.cdn.mozilla.net
+127.0.0.1	shavar.services.mozilla.com
+127.0.0.1	push.services.mozilla.com
