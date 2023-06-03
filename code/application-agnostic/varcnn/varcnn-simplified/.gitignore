@@ -1,7 +1,0 @@
-.idea/
-__pycache__/
-*.pyc
-predictions/
-data/
-job_result.json
-model_weights.h5
