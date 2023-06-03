@@ -278,6 +278,7 @@ def get_features(hars):
     for i, url in enumerate(hars):
         samples = hars[url]
         empty_samples = [s for s in samples if len(samples[s]) == 0]
+        #print(len(samples), len(empty_samples))
 
         if len(samples) < 20:
             print("Skipping", url, "only", len(samples), "samples")

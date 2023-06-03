@@ -30,9 +30,9 @@ def random_forest(features_names, X_train, y_train, X_test, y_test, n_trees, rfe
 
     scores = dict(
         accuracy = metrics.accuracy_score(y_test, y_pred),
-        precision = metrics.precision_score(y_test, y_pred, average='micro'),
-        recall = metrics.recall_score(y_test, y_pred, average='micro'),
-        f1score = metrics.f1_score(y_test, y_pred, average='micro'),
+        precision = metrics.precision_score(y_test, y_pred, average='macro'),
+        recall = metrics.recall_score(y_test, y_pred, average='macro'),
+        f1score = metrics.f1_score(y_test, y_pred, average='macro'),
     )
 
     n_uniq_classes = len(list(set(y_test)))
@@ -52,9 +52,9 @@ def random_forest(features_names, X_train, y_train, X_test, y_test, n_trees, rfe
 
         scores_corrected = dict(
             accuracy = metrics.accuracy_score(y_test_ext, y_pred_ext),
-            precision = metrics.precision_score(y_test_ext, y_pred_ext, average='micro'),
-            recall = metrics.recall_score(y_test_ext, y_pred_ext, average='micro'),
-            f1score = metrics.f1_score(y_test_ext, y_pred_ext, average='micro'),
+            precision = metrics.precision_score(y_test_ext, y_pred_ext, average='macro'),
+            recall = metrics.recall_score(y_test_ext, y_pred_ext, average='macro'),
+            f1score = metrics.f1_score(y_test_ext, y_pred_ext, average='macro'),
         )
 
         print(f"Scores were {scores['f1score']} but were corrected to {scores_corrected['f1score']}.")
