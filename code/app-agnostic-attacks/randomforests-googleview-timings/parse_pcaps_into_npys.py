@@ -12,12 +12,12 @@ from pathlib import Path
 from pathlib import Path
 
 if True:
-    sys.path.append("../lib")
+    sys.path.append("../../lib")
     import utils
     import constants
-    import pcap_parsing_with_ip
+    import pcap_parsing
 
-FORCE_REBUILD = True
+FORCE_REBUILD = False
 NPY_SPLIT = 'summary_quic_tls_split.npy'
 NPY_MERGED = 'summary_quic_tls_merged.npy'
 
@@ -33,18 +33,18 @@ def get_label(f):
     parts = relative_path.split('/')
     url = parts[0]
     repeat = int(parts[1])
-    quic = "quic"
+    quic = parts[2]
 
-    #if quic != "quic" and quic != "non-quic":
-    #    print(f"Panic parsing path ${f}, quic should be \"quic\" or \"non-quic\".")
-    #    sys.exit(1)
+    if quic != "quic" and quic != "non-quic":
+        print(f"Panic parsing path ${f}, quic should be \"quic\" or \"non-quic\".")
+        sys.exit(1)
 
     label = (url, repeat)
     return label, quic
 
 
 def create_npy_quic_and_tls_separated(folder, npy_path):
-    files = glob.glob(folder + '**/capture.pcap', recursive=True)
+    files = glob.glob(folder + '**/*.pcap', recursive=True)
 
     label, quic = get_label(files[0])
     url, _ = label
@@ -58,8 +58,8 @@ def create_npy_quic_and_tls_separated(folder, npy_path):
         label, quic = get_label(f)
         url, repeat = label
 
-        txt = pcap_parsing_with_ip.pcap_to_txt(f)
-        quic_records, tls_records = pcap_parsing_with_ip.text_to_timestamp_sizes_separate_quic_tls_traffic(txt)
+        txt = pcap_parsing.pcap_to_txt(f)
+        quic_records, tls_records = pcap_parsing.text_to_timestamp_sizes_separate_quic_tls_traffic(txt)
 
         summary[url][quic][repeat] = dict(quic=quic_records, tls=tls_records)
 
@@ -112,7 +112,6 @@ def process_folder(folder):
 
 
 if __name__ == "__main__":
-    
     if len(sys.argv) != 2:
         print("Usage: script DATASET_PATH/pcaps/")
         sys.exit(1)
@@ -127,8 +126,8 @@ if __name__ == "__main__":
 
     folders = glob.glob(dataset_path + '*/', recursive=False)
     maximum = len(folders)
-    
-    utils.parallel(folders, process_folder, n_jobs=5)
+
+    utils.parallel(folders, process_folder, n_jobs=8)
 
     print("Done creating individual .npy's.")
     

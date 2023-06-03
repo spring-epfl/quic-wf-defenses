@@ -10,11 +10,13 @@ The code is organized in the following folders:
 
 *process-capture* provides the scripts necessary to process the captures into formats used for classification. It also contains scripts to convert network captures into netflows. 
 
-*application-agnostic* contains scripts for the various application-agnostic WF attacks and defenses (Section 4 of the paper).
+*app-agnostic-attacks* contains scripts for the various application-agnostic WF attacks and defenses (Section 4 of the paper).
 
-*application-aware* contains scripts for the various application-aware WF attacks and defenses (Section 5 of the paper).
+*app-aware-attacks* contains scripts for the various application-aware WF attacks and defenses (Section 5 of the paper).
 
 *lib* contains some helper files used by the other scripts.
+
+Each folder contains READMEs that describe how to run the code.
 
 ### Paper
 
