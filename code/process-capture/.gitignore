@@ -36,3 +36,5 @@ quic-100p-150
 quic-100p-150-google
 *-view
 *-again
+.ipynb_checkpoints/
+.DS_Store
