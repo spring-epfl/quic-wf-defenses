@@ -1,4 +1,4 @@
-# randomforests
+# wf-unconstrained
 
 This folder contains code to run the WF attack using random forests for the unconstrained adversary. It is used in Section 4.1 of the paper. 
 

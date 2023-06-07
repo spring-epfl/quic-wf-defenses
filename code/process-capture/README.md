@@ -11,6 +11,7 @@ The code consists of the following scripts:
 **NOTE**: This script requires that [nfdump](https://github.com/phaag/nfdump) is installed. Install nfdump from the provided link as it also has **nfpcapd** (that the script requires).
 3. **parse_netflows_into_npys.py** converts the netflows from parse_pcaps_into_netflows.py to .npy files. Run the script with the path to the netflow files as input. 
 4. **create_google_view.py** creates the Google view of network traces (used in Section 4.2.3). It requires traceroutes from **capture/**, as the traceroutes are used to determine which resources pass through the Google AS. Run the script with the path to the pcap and traceroute files as input. 
-3. **parse_hars_into_npy.py** converts the directory of .har files and processes them to a single .npy file. Modify lines 96-98 with appropriate paths and run the script.
+5. **create_google_handshakes.py** creates the Google ClientHello view of network traces (used in Section 4.2.3). Run **create_google_view.py** first, and then run this script on the traces to extract handshakes.
+6. **parse_hars_into_npy.py** converts the directory of .har files and processes them to a single .npy file. Modify lines 96-98 with appropriate paths and run the script.
 
 The file **pcap_sizes.py** is a helper script to check sizes of pcaps.
