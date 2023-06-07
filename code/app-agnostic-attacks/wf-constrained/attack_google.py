@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
-import src.attack as attack
+import src.attack_google as attack
 import sys
 import glob
 import os
 import lib.plot_builder as plot_builder
 
-npys = glob.glob('datasets/*.npy', recursive=False)
+INPUT_DIR = "datasets/"
+npys = glob.glob(INPUT_DIR + '*.npy', recursive=False)
 
 for npy_file in npys:
     json_file = npy_file.replace('.npy', '.json')

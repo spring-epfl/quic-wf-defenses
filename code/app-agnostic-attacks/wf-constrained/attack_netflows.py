@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import src.attack as attack
+import src.attack_netflows as attack
 import sys
 import glob
 import os
