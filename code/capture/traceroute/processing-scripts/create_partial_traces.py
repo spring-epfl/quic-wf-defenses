@@ -1,13 +1,55 @@
 import os
 import json
 from random import sample
+from typing import OrderedDict
 import numpy as np
 import socket
 from scapy.all import *
 from scapy.layers.tls.all import *
+import glob
+import multiprocessing as mp
+import numpy as np
+import itertools
+import ntpath
+import operator
+import sys
+import os
 from utils import *
 
-def process_pcap(pcap, ip_list, ip_uses_quic, resource_list, output_dir):
+
+PARALLEL_ENABLED = True
+
+
+# Returns [function(task) for task in tasks] in parallel or not (depending on PARALLEL_ENABLED)
+def parallel(tasks, function, n_jobs=20):
+    if PARALLEL_ENABLED:
+        print(f"Starting pool of {n_jobs} workers...")
+        pool = mp.Pool(n_jobs)
+        data_dict = pool.map(function, tasks)
+        return data_dict
+    else:
+        res = []
+        for t in tasks:
+            res.append(function(t))
+        return res
+
+def find_other_ips_based_on_resources(pkts, ips, resource_list):
+
+    ips_to_keep = []
+    for pkt in pkts:
+        if pkt.haslayer(TLS_Ext_ServerName):
+            if pkt.haslayer(ServerName):
+                servername = pkt[ServerName].servername.decode()
+                if servername in resource_list:
+                    dst = pkt[IP].dst
+                    if dst not in ips:
+                        ips_to_keep.append(dst)
+
+    return ips_to_keep
+
+
+def process_pcap(params):
+    pcap, ip_list, ip_uses_quic, resource_list, output_dir, opposite = params
 
     """
     Function to process a single pcap file using Scapy.
@@ -20,61 +62,45 @@ def process_pcap(pcap, ip_list, ip_uses_quic, resource_list, output_dir):
     The output is a pcap with partial trace in the output directory.
     """
 
+    if opposite:
+        print("Processing", pcap, "in opposite mode")
+
+
     try:
         # We first do a simple IP comparison. If the destination IP of a packet is in the
         # IP list, we keep that packet. We also log this IP.
-        seen_ips = []
         new_pkts = []
         pkts = rdpcap(pcap)
-        for pkt in pkts:
-            if pkt.haslayer(IP):
-                src = pkt[IP].src
-                dst = pkt[IP].dst
-                if dst in ip_list:
-                    new_pkts.append(pkt)
-                    seen_ips.append(dst)
-                elif src in ip_list:
-                    new_pkts.append(pkt)
-                    seen_ips.append(src)
+
 
         # Our resource-IP mapping might not be perfect. IPs could have changed.
         # For example A.com might now correspond to 1.2.3.5 instead of 1.2.3.4.
         # We do the next step to handle this case.
         # We look at the SNI in the ClientHellos to see if the host name corresponds to the resource.
         # If it does, we log that IP, and also keep the packet corresponding to the IP.
+        other_ips = find_other_ips_based_on_resources(pkts, ip_list, resource_list)
 
-        missed_ips = set(ip_list) - set(seen_ips)
-        ips_to_keep = []
+        ips = set(ip_list)
+        ips.update(other_ips)
 
-        if len(missed_ips) > 0:
-            for pkt in pkts:
-                if pkt.haslayer(TLS_Ext_ServerName):
-                    if pkt.haslayer(ServerName):
-                        servername = pkt[ServerName].servername.decode()
-                        if servername in resource_list:
-                            dst = pkt[IP].dst
-                            if dst not in seen_ips:
-                                ips_to_keep.append(dst)
+        for pkt in pkts:
+            take = False
+            if pkt.haslayer(IP):
+                src = pkt[IP].src
+                dst = pkt[IP].dst
+                ip_corresponds_to_AS = (dst in ips or src in ips)
+                if ip_corresponds_to_AS and not opposite or not ip_corresponds_to_AS and opposite:
+                    new_pkts.append(pkt)
 
-            for pkt in pkts:
-                if pkt.haslayer(IP):
-                    dst = pkt[IP].dst
-                    src = pkt[IP].src
-                    if dst in ips_to_keep:
-                        new_pkts.append(pkt)
-                    elif src in ips_to_keep:
-                        new_pkts.append(pkt)
 
-        # We sort the selected packets by timestamp.
-        sorted_new_pkts = sorted(new_pkts, key=lambda ts: ts.time)
         # We write the packets to output.
-        wrpcap(os.path.join(output_dir, "capture.pcap"), sorted_new_pkts)
+        wrpcap(os.path.join(output_dir, "capture.pcap"), new_pkts)
 
     except Exception as e:
         print("Error processing pcap:", pcap, e)
 
 
-def transform_traces(asn_process_dict, pcaps_dir, output_dir, tag="quic"):
+def transform_traces(asn_process_dict, pcaps_dir, output_dir, tag="quic", opposite=False):
 
     """
     Function to create traces for the partial adversary given full traces.
@@ -89,13 +115,13 @@ def transform_traces(asn_process_dict, pcaps_dir, output_dir, tag="quic"):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
+    tasks = []
     for k, v in asn_process_dict.items():
 
         try:
             site_dir = os.path.join(pcaps_dir, k)
             sample_dirs = os.listdir(site_dir)
             
-
             for sample_dir in sample_dirs:
 
                 ip_list = []
@@ -112,10 +138,14 @@ def transform_traces(asn_process_dict, pcaps_dir, output_dir, tag="quic"):
                     except Exception as e:
                         print("Error with IP mapping:", e, resource)
 
-                process_pcap(filename, ip_list, ip_uses_quic, v['resources'], full_output_dir)
+                params = [filename, ip_list, ip_uses_quic, v['resources'], full_output_dir, opposite]
+                tasks.append(params)
 
         except Exception as e:
             print("Error transforming traces:", e)
+
+    print("Running", len(tasks), "tasks")
+    parallel(tasks, process_pcap)
 
 def process_traceroute_files(traceroute_dir):
 
@@ -195,6 +225,10 @@ def get_as_routes(ASN, traceroute_dir, har_dir):
     for dirname in dirnames:
 
         asn_resources_dict[dirname] = { 'resources' : [], 'uses_quic' : [] }
+
+        if not os.path.isfile(os.path.join(har_dir, dirname + ".json")):
+            print(f"Warning: missing traceroute {har_dir}{dirname}.json")
+            continue
         har_data = read_har_file(dirname, har_dir)
 
         filenames = os.listdir(os.path.join(traceroute_dir, dirname))
@@ -263,19 +297,39 @@ def print_as_info(traceroute_dir):
     print_table(asn_seen_percroute_processed, 'ASN', '% of routes seen per site', "PercRoute")
     
 
-def main():
+def process(ASN=15169, opposite=False):
 
 
-    TRACEROUTE_DIR = "../traceroutehar/output_lb_100p_150/" #Traceroute directory # traIXrouteVPS/outputquic150
-    HAR_DIR = "../outputhar_lb_quic-100p-150/all/" #HAR file directory
-    ASN = 15169 #Chosen ASN adversary
-    PCAP_DIR = "/home/jwhite/d/git/quic-fingerprinting/cf-clusters-datasets/cluster-203-2/pcaps" #Input pcaps
-    OUTPUT_DIR = "/home/jwhite/d/git/quic-fingerprinting/cf-clusters-datasets/cluster-203-2-AS-view/pcaps" #Output directory for processed pcaps
+    TRACEROUTE_DIR = "outputquic100/" #Traceroute directory
+    HAR_DIR = "hars/" #HAR file directory
 
+    PCAP_DIR = "quic-100p-150/pcaps" #Input pcaps
+    OUTPUT_DIR = f"quic-100p-150-{ASN}-view/pcaps" #Output directory for processed pcaps
+
+    if opposite:
+        OUTPUT_DIR = f"quic-100p-150-{ASN}-view-inverse/pcaps"
+
+    print("Working on", ASN)
+
+    try:
+        os.makedirs(OUTPUT_DIR)
+    except:
+        pass
 
     print_as_info(TRACEROUTE_DIR)
     asn_process_dict = get_as_routes(ASN, TRACEROUTE_DIR, HAR_DIR)
-    #transform_traces(asn_process_dict, PCAP_DIR, OUTPUT_DIR)
+    transform_traces(asn_process_dict, PCAP_DIR, OUTPUT_DIR, opposite=opposite)
+
+
+def main():
+
+
+    # process all these ASNS
+    asns = [15169, 13335, 32934, 62713, 16509, 20940, 3356, 11742, 18101, 15412, 3491, 45899, 2914, 25184, 1273, 29049, 60068, 5511]
+    asns = list(set(asns))
+
+    for asn in asns:
+        process(asn)
 
 if __name__ == "__main__":
 

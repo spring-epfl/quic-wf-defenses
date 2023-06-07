@@ -2,7 +2,7 @@
 
 Artifact release for the paper "Evaluating practical QUIC website fingerprinting defenses for the masses" (PETS 2023).
 
-### Organization
+### Code Organization
 
 The code is organized in the following folders:
 
@@ -17,6 +17,31 @@ The code is organized in the following folders:
 *lib* contains some helper files used by the other scripts.
 
 Each folder contains READMEs that describe how to run the code.
+
+### Setup 
+
+We provide a Docker setup with all the required dependencies. First, install Docker. After cloning the repo, build the image using the following command: 
+
+```
+$ cd quic-wf-defenses
+$ docker build -t quic-wf-defenses .
+
+```
+
+Start the container and execute a shell as follows:
+
+```
+$ docker run --rm --detach --interactive --name quic-wf-container quic-wf-defenses
+$ docker exec -it quic-wf-container /bin/bash
+
+```
+
+### Datasets
+
+We provide datasets on [SWITCHDrive](https://drive.switch.ch/index.php/s/NDGjfJqrePU0G77) which can be used to as tests to run the attacks (instead of performing captures from scratch). If you want to perform your own captures, please follow the instructions in **code/capture/**.
+
+The README has an overview of the datasets. 
+
 
 ### Paper
 
@@ -40,9 +65,3 @@ If you use the code/data in your research, please cite our work as follows:
   year      = {2023}
 }
 ```
-
-### Contact
-
-In case of questions, please get in touch with [Sandra Siby](https://sandrasiby.github.io/).
-
-

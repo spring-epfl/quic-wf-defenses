@@ -249,10 +249,10 @@ def main():
 
     # Get info from Google
     GOOGLE_ASN = 15169
-    TRACEROUTE_DIR = "../traceroutehar/output_lb_quic-80p-122/" #Traceroute directory
-    HAR_DIR = "../outputhar_lb_quic-80p-122/all/" #HAR file directory
-    PCAP_DIR = "/home/jwhite/d/git/quic-fingerprinting/cf-clusters-datasets/quic-80p-122/pcaps" #Input pcaps
-    OUTPUT_DIR = f"/home/jwhite/d/git/quic-fingerprinting/cf-clusters-datasets/quic-80p-122-Google-dest/pcaps" #Output directory for processed pcaps
+    TRACEROUTE_DIR = "traceroutes/" #Traceroute directory
+    HAR_DIR = "hars/" #HAR file directory
+    PCAP_DIR = "pcaps/" #Input pcaps
+    OUTPUT_DIR = f"google/pcaps" #Output directory for processed pcaps
 
     asn_process_dict = get_as_routes(GOOGLE_ASN, TRACEROUTE_DIR, HAR_DIR)
 
