@@ -21,9 +21,9 @@
 
 2. Modify the PROFILE variable to set the kind of experiment you want in `automate-capture.sh:22-32`
 
-3. Run `./capture-url.sh URL PROFILE OUTPUT_PATH`. You should see the title of the webpage being printed on stdout.
+3. Run `./capture-url.sh INTERFACE URL PROFILE OUTPUT_PATH`. You should see the title of the webpage being printed on stdout.
 
-For instance `./capture-url.sh blog.cloudflare.com firefox-quic-default dataset`
+For instance `./capture-url.sh veth1 blog.cloudflare.com firefox-quic-default dataset`
 
 It will create:
 
@@ -53,8 +53,8 @@ See [setup/setup-ns.sh](setup/setup-ns.sh) for how to do this.
 
 #### Run a capture
 
-1. Work in `screen`
+1. If you deployed this script in a VPS accessible through SSH, work in `screen` or `tmux`.
 
-2. Ensure you are in the network namespace: Run `ip link`, if you don't see `veth1`, run `sudo ip netns exec netns1 bash` to enter the network namespace as root, then `su USERNAME` (important to get back your environment variables).
+2. **Ensure you are in the network namespace:** Run `ip link`, if you don't see `veth1`, run `# ip netns exec netns1 bash` to enter the network namespace as `root`.
 
 3. Run `./automate-capture.sh`. It runs the script `./capture-url.sh` in a loop, iterating over the contents of `urls`.
