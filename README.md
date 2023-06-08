@@ -31,7 +31,7 @@ $ docker build -t quic-wf-defenses .
 Start the container and execute a shell as follows:
 
 ```
-$ docker run --rm --detach --interactive --name quic-wf-container quic-wf-defenses
+$ docker run --rm --detach --interactive --privileged --name quic-wf-container quic-wf-defenses
 $ docker exec -it quic-wf-container /bin/bash
 
 ```
