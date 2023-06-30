@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 rmfiles() {
     rm -rf *.log sslkeys.txt *.pcap profiles

@@ -15,7 +15,9 @@ gcc \
 git \
 gnupg \
 htop \
+inetutils-ping \
 iproute2 \
+iptables \
 libc6-dev \
 liblapack-dev \
 libopenblas-dev \
@@ -109,7 +111,7 @@ requests-oauthlib==1.3.1 \
 rsa==4.9 \
 scikit-learn==1.2.2 \
 scipy==1.10.1 \
-selenium==4.10.0 \
+selenium==4.9.0 \
 six==1.16.0 \
 sniffio==1.3.0 \
 sortedcontainers==2.4.0 \
