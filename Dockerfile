@@ -19,10 +19,12 @@ inetutils-ping \
 iproute2 \
 iptables \
 libc6-dev \
+libffi-dev \
 liblapack-dev \
 libopenblas-dev \
 libssl-dev \
 locales \
+nano \
 net-tools \
 openjdk-11-jre \
 python3 \
@@ -71,6 +73,7 @@ chardet==5.1.0 \
 charset-normalizer==3.1.0 \
 contourpy==1.0.7 \
 cycler==0.11.0 \
+dnspython==2.3.0 \
 exceptiongroup==1.1.1 \
 fonttools==4.39.4 \
 frozenlist==1.3.3 \
@@ -136,6 +139,9 @@ dpkg-reconfigure --frontend=noninteractive locales && \
 update-locale 'LANG=en_US.UTF-8' && \
 echo "export VISIBLE=now" >> /etc/profile \
 && echo 'Configured locales'
+
+RUN useradd -m -u 1000 -U -G sudo -s /bin/bash quicuser
+USER quicuser
 
 COPY ./code /quic-wf-defenses
 

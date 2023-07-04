@@ -1,8 +1,10 @@
 #!/bin/bash
-mkdir -p outputscamper
-#mkdir -p outputtraceroute
-#Read from urls file
-input="urls"
+
+INPUT_URLS="${1}"
+OUTPUT_DIR="${2}"
+
+mkdir -p "${OUTPUT_DIR}"
+
 count=0
 while IFS= read -r line
 do
@@ -11,9 +13,9 @@ do
   for i in $(seq 1 $1)
   do
   	#run scamper with Paris
-  	./bin/traixroute -thread -stats -ojson outputscamper/out$count\_$i.json -asn probe -sc -dest $line
+  	./bin/traixroute -thread -stats -ojson "${OUTPUT_DIR}/out${count}_${i}.json" -asn probe -sc -dest "${line}"
   	#run normal
-  	#./bin/traixroute -thread -stats -ojson outputtraceroute/out$count\_$i.json -asn probe -t -dest $line
+  	#./bin/traixroute -thread -stats -ojson ${OUTPUT_DIR}/out${count}_${i}.json" -asn probe -t -dest "${line}"
   done
   count=$((count+1))
-done < "$input"
+done < "${INPUT_URLS}"

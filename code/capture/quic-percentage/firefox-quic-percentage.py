@@ -54,10 +54,10 @@ def parse_har(file, har_data):
 
 
 # old version (parsing was done outside of the browser, but that was buggy)
-script = """HAR.triggerExport().then(harLog => {
-            for(i in harLog['entries']) { try{ delete harLog['entries'][i]['response']['content'] } catch {} };
-            document.documentElement.innerHTML = '<div id="lb_json">' + JSON.stringify(harLog) + '<div id="lb_end"></div></div>';
-    });"""
+#script = """HAR.triggerExport().then(harLog => {
+#            for(i in harLog['entries']) { try{ delete harLog['entries'][i]['response']['content'] } catch {} };
+#            document.documentElement.innerHTML = '<div id="lb_json">' + JSON.stringify(harLog) + '<div id="lb_end"></div></div>';
+#    });"""
 
 # parses a Har log from within the browser using JS
 # exports a list of resources, format: [url, start time, host, alt-svc, [request header size, body size], [response header size, body size]], HTTP status, timings (Blocked, DNS, Connect, TLS, Send, Wait, Receive)
@@ -72,7 +72,7 @@ HAR.triggerExport().then(harLog => {
 """
 
 
- 
+
 if len(sys.argv) != 3:
     print("Usage: script.py URL_LIST OUTPUT_FOLDER")
     sys.exit(1)
@@ -158,11 +158,10 @@ def fetch_url(i, url):
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'lb_json')))
 
         # cut the stringified JSON
-        txt =  driver.page_source 
+        txt =  driver.page_source
         txt = txt[txt.find('<div id="lb_json">'):]
         txt = txt[:txt.find('<div id="lb_end">')]
         txt = txt.replace('<div id="lb_json">', '').replace('<div id="lb_end">', '')
-
 
         # parse and filter
         json_har = json.loads(txt)
@@ -174,12 +173,12 @@ def fetch_url(i, url):
 
         print("Written", har_path, "(", os.path.getsize(har_path), "bytes)")
         n_consecutive_errors = 0
-        
+
     except TimeoutException:
         print("Timeout", url)
     except Exception as e:
         n_consecutive_errors += 1
-        
+
         print("Other error", str(e), e.__cause__, url)
 
         with open(har_path+".log", 'w') as har_file:
