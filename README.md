@@ -37,6 +37,12 @@ $ docker run --rm --detach --interactive --privileged --mount type=bind,source="
 $ docker exec -it quic-wf-container /bin/bash
 ```
 
+After running the experiment, you can stop the container with a regulardocker command:
+
+```
+$ docker container stop quic-wf-container
+```
+
 ### Datasets
 
 We provide datasets on [SWITCHDrive](https://drive.switch.ch/index.php/s/NDGjfJqrePU0G77) which can be used to as tests to run the attacks (instead of performing captures from scratch). If you want to perform your own captures, please follow the instructions in **code/capture/**.

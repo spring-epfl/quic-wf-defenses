@@ -24,7 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
 PROFILE_QUIC = './prefs_quic.js'
-PROFILE_URL = "./profile"
+PROFILE_URL = "/tmp/profile"
 H3_PATTERN = re.compile("h3-[TQ0-9]+=|quic=", re.IGNORECASE)
 
 

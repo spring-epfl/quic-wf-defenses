@@ -24,7 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
 PROFILE_QUIC = './prefs_quic.js'
-PROFILE_URL = "./profile"
+PROFILE_URL = "/tmp/profile"
 H3_PATTERN = re.compile("h3-[TQ0-9]+=|quic=", re.IGNORECASE)
 
 
@@ -47,7 +47,7 @@ HAR.triggerExport().then(harLog => {
 """
 
 
- 
+
 if len(sys.argv) != 3:
     print("Usage: script.py URL_LIST OUTPUT_FOLDER")
     sys.exit(1)
@@ -127,7 +127,7 @@ def fetch_url(i, url):
         WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'lb_json')))
 
         # cut the stringified JSON
-        txt =  driver.page_source 
+        txt =  driver.page_source
         txt = txt[txt.find('<div id="lb_json">'):]
         txt = txt[:txt.find('<div id="lb_end">')]
         txt = txt.replace('<div id="lb_json">', '').replace('<div id="lb_end">', '')
@@ -141,12 +141,12 @@ def fetch_url(i, url):
 
         print("Written", har_path, "(", os.path.getsize(har_path), "bytes)")
         n_consecutive_errors = 0
-        
+
     except TimeoutException:
         print("Timeout", url)
     except Exception as e:
         n_consecutive_errors += 1
-        
+
         print("Other error", e, url)
 
         print(txt)

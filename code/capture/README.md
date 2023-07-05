@@ -23,14 +23,14 @@ Firefox uses some auto-update features which might hinder our data collection. T
 
 ```
 $ cd /quic-wf-defenses/capture
-$ sudo cat setup/hosts >> /etc/hosts
+$ cat /etc/hosts setup/hosts | sudo tee /etc/hosts
 ```
 
-To disable Firefox auto-update, we provide a configuration that you can add in `/opt/firefox/distribution/` (or in the `distribution` directory at the location where Firefox is installed).
+To disable Firefox auto-update, we provide a configuration that you can add in `/usr/share/firefox-esr/distribution/` (or in the `distribution` directory at the location where Firefox is installed).
 
 ```
-$ sudo cp setup/opt_firefox_distribution_policies /opt/firefox/distribution/policies
-$ sudo ln -s policies /opt/firefox/distribution/policies.json
+$ sudo cp setup/opt_firefox_distribution_policies /usr/share/firefox-esr/distribution/policies
+$ sudo ln -s policies /usr/share/firefox-esr/distribution/policies.json
 ```
 
 To avoid other traffic getting mixed, we need to setup a network namespace named `netns1` with an interface `veth1` with IP `10.1.1.1` which we will use to capture data.
@@ -51,28 +51,56 @@ To enure that you are using the correct network, you can check that you have a `
 
 ```
 $ ip link
-...
-x: veth1: ...
-...
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: veth1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 7e:83:93:3e:fc:74 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 ```
 
 ## Evaluating which Websites to Capture
 
 As QUIC is not yet widely deployed, it is important to select a subset of website which are already using QUIC.
-We evaluate if a website should be included in that subset by measuring the percentage of QUIC request a browser make to other hostnames while visiting that website.
-We wrote scripts to automate this process.
+
+We start the experiment by retriving a list of website we would like to analyse, as well as their ranking and evaluate on which websites in this list we should concentrate our efforts by ordering them by percentage of QUIC request a browser make to other hostnames while visiting a website, and by popularity ranking if visiting two websites generates the same amount of QUIC traffic.
+
+```
+$ cat /data/top-urls.txt
+google.com
+facebook.com
+youtube.com
+...
+$ cat /data/ranked-urls.txt
+1,google.com
+2,facebook.com
+3,youtube.com
+...
+```
+
+We wrote scripts to automate the capture process and to evaluate on which website we should concentrate our efforts.
 
 To reproduce our data set, assuming we are using a Docker container set up as proposed in the README at the root of this repository, we first call a shell script to retrieve data from websites and extract HAR data from them.
 
 ```
 $ cd /quic-wf-defenses/capture/quic-percentage
-$ bash automate-capture.sh /data/urls.txt "/data/$(date +%Y%m%d)"
+$ bash automate-capture.sh /data/top-urls.txt "/data/$(date +%Y%m%d)"
 ```
 
 Then we parse pare the collected HAR files to evaluate which website is doing the highest percentage of external QUIC connections. Then order them by percentage and extract the first 200 websites by this criteria.
 
 ```
-$ python3 parse_har.py /data/urls.txt "/data/$(date +%Y%m%d)/percentage" "/data/$(date +%Y%m%d)/percentage.csv" -n 200
+$ python3 parse_har.py /data/ranked-websites.txt "/data/$(date +%Y%m%d)/percentage" "/data/$(date +%Y%m%d)/percentage.csv" -n 200
+```
+
+You can then prepare the input of the next phase from the resulting file `percentage.csv`.
+For example if you find a sufficient number of QUIC requests for all 200 "best" websites, a combination of `tail` and `cut` is ufficient to produce the input.
+
+```
+$ tail -n +2 "/data/$(date +%Y%m%d)/percentage.csv" | cut -d ',' -f1 > /data/urls_subset.txt
+$ cat /data/websites.txt
+policies.google.com
+instagram.com
+googletagmanager.com
+...
 ```
 
 ## Capture Traffic from Website subset
@@ -113,7 +141,8 @@ We provided a script to extract HAR data from scrapped websites.
 
 ```
 $ cd /quic-wf-defenses/capture/hars
-$ bash automate-capure.sh /data/good_urls.txt "/data/$(date +%Y%m%d)/hars"
+$ mkdir "/data/$(date +%Y%m%d)/hars"
+$ bash automate-capture.sh /data/urls_subset.txt "/data/$(date +%Y%m%d)/hars"
 ```
 
 ## Scrap Links of Sub-pages
@@ -122,7 +151,7 @@ We provide a script to do a simple links extraction from a website.
 
 ```
 $ cd /quic-wf-defenses/capture/links
-$ python3 links-capture.py /data/good_urls.txt "/data/$(date +%Y%m%d)/links"
+$ python3 links-capture.py /data/urls_subset.txt "/data/$(date +%Y%m%d)/links"
 ```
 
 ## Traceroute Experiments

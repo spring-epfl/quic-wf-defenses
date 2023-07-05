@@ -33,6 +33,7 @@ python3-venv \
 python3-pip \
 rsync \
 sudo \
+tar \
 tcpdump \
 tmux \
 tree \
@@ -140,9 +141,11 @@ update-locale 'LANG=en_US.UTF-8' && \
 echo "export VISIBLE=now" >> /etc/profile \
 && echo 'Configured locales'
 
-RUN useradd -m -u 1000 -U -G sudo -s /bin/bash quicuser
-USER quicuser
-
 COPY ./code /quic-wf-defenses
+
+RUN useradd -m -u 1000 -U -G sudo,wireshark -s /bin/bash quicuser && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && chown -R quicuser /quic-wf-defenses
+
+
+USER quicuser
 
 ENTRYPOINT ["/bin/bash"]

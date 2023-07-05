@@ -15,8 +15,8 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium import webdriver
 import traceback
 
-PATH_GECKO_DRIVER = Path.home() / "geckodriver"
-PATH_CHROME_DRIVER = Path.home() / "chromedriver"
+PATH_GECKO_DRIVER = Path("/usr/local/bin/geckodriver")
+PATH_CHROME_DRIVER = Path("/usr/local/bin/chromedriver")
 
 
 def stop_dumpcap() -> None:
