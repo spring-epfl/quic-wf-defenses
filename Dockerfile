@@ -31,6 +31,7 @@ python3 \
 python3-dev \
 python3-venv \
 python3-pip \
+python3-wheel \
 rsync \
 sudo \
 tar \
@@ -132,6 +133,18 @@ wsproto==1.2.0 \
 yarl==1.9.2 \
 zipp==3.15.0 \
 && echo 'Python dependencies installed!'
+
+
+RUN cd / && \
+git clone https://github.com/gnomikos/traIXroute.git && \
+cd traIXroute && \
+sed -i -e 's/cffi==1.7.0/cffi==1.15.0/' -e 's/pysubnettree==0.26/pysubnettree==0.35/' setup/requirements.txt && \
+python3 lib/traixroute/downloader/install_scamper.py && \
+python3 -m venv /venv && \
+. /venv/bin/activate && \
+python -m pip install wheel && \
+python -m pip install -r setup/requirements.txt && \
+echo 'traIXroute installed!'
 
 # Configure locales
 RUN printf '%s\n' 'fr_CH.UTF-8 UTF-8' 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \

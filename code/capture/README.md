@@ -156,34 +156,31 @@ $ python3 links-capture.py /data/urls_subset.txt "/data/$(date +%Y%m%d)/links"
 
 ## Traceroute Experiments
 
-We wrote a script to run a normal traceroute N times for a list of URLs:
-
-```
-$ cd /quic-wf-defenses/capture/traceroutes
-$ bash loop-tr.sh URLS OUTPUT_DIR N
-```
-
-where URLS is a file containing the URLs you want to traceroute, OUTPUT_DIR is the output directory, and N is the number of times you want to run a traceroute for a URL.
-
-### Using trAIxroute
-
-We use another tool **trAIxroute** . Advantages of using this:
-
+We use the tool **trAIxroute**, it offers for the following advantages:
 1. It can run both normal traceroute and Paris-traceoute, so we can compare the results.
 2. It can provide results on IXPs in the route (useful if we consider an IXP adversary).
 
+As this tool requires some very specific dependancies, we run it with a Python virtual environment which needs to be activated:
+
 ```
-$ python3 -m traixroute -thread probe -t -dest google.ch
+$ . /venv/bin/activate
+(venv) $ export PATH="/traIXroute/bin:$PATH"
+```
+
+You should now be able to run it for example for `google.ch`.
+```
+(venv) $ traixroute -thread probe -t -dest google.ch
 ```
 
 Replace `-t` with `-sc ` to run Paris traceroute.
 
 **Note:** we can also get ASN information with `-asn` flag.
 
-We wrote a script to run a trAIxroute traceroute N times for a list of URLs:
+We wrote a script to run a trAIxroute N times for a list of URLs:
 
 ```
-$ bash run-traixroute.sh URLS OUTPUT_DIR N
+(venv) $ cd /quic-wf-defenses/capture/traceroutes
+(venv) $ bash run-traixroute.sh URLS OUTPUT_DIR N
 ```
 
 where URLS is a file containing the URLs you want to traceroute, OUTPUT_DIR is the output directory, and N is the number of times you want to run a traceroute for a URL.
