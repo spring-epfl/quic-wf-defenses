@@ -240,10 +240,10 @@ def process_npy(dataset_npy):
 
     y_i, mapping = labels_strings_to_ids(y_str)
 
-    mapfile = 'plots/'+dataset_npy.replace('all_datasets_2/', '').replace('.npy', '.map.json')
-    with open(mapfile, 'w') as f:
-        print("Writting map", mapfile)
-        f.write(json.dumps(mapping))
+    # mapfile = 'plots/'+dataset_npy.replace('all_datasets_2/', '').replace('.npy', '.map.json')
+    # with open(mapfile, 'w') as f:
+    #     print("Writting map", mapfile)
+    #     f.write(json.dumps(mapping))
     y_i = np.array(y_i)
 
     if len(X) == 0:

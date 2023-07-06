@@ -229,62 +229,16 @@ def run(dataset_npy):
 
     y_i, mapping = labels_strings_to_ids(y_str)
 
-    mapfile = 'plots/'+dataset_npy.replace('datasets/', '').replace('.npy', '.map.json')
-    with open(mapfile, 'w') as f:
-        print("Writting map", mapfile)
-        f.write(json.dumps(mapping))
+    # mapfile = 'plots/'+dataset_npy.replace('datasets/', '').replace('.npy', '.map.json')
+    # with open(mapfile, 'w') as f:
+    #     print("Writting map", mapfile)
+    #     f.write(json.dumps(mapping))
     y_i = np.array(y_i)
         
     print(f"Loaded {len(X)} rows, {len(feature_names)} feature names for {len(X[0])} features")
     score, features_and_percentages, y_test_all, y_pred_all = rf_folds(X, y_i, feature_names, rfe_nfeatures=cst.KF_RFE_NFEATURES_TO_SELECT, rfe_steps=cst.KF_RFE_STEPS, n_trees=cst.N_TREES, n_classes=125)
 
-    plot_builder.confusion_matrix(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-cm", y_test_all, y_pred_all)
-    plot_builder.feature_importance(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-fi", features_and_percentages)
+    #plot_builder.confusion_matrix(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-cm", y_test_all, y_pred_all)
+    #plot_builder.feature_importance(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-fi", features_and_percentages)
 
     return dict(score=score, features=features_and_percentages)
-
-    # open-world mode
-    
-    # 11000 websites, 1000 with 40 samples, 10k with 3 samples
-    # monitored set: 1% => 110 websites with 40 samples
-    # non-monitored set: 99% => 10890 websites with 3-40 samples
-    # test/train split separately
-
-    y_mon_idx = np.where(y == NON_MONITORED_LABEL)
-    y_unmon_idx = np.where(y != NON_MONITORED_LABEL)
-        
-    print(y_mon_idx, max(list(y_mon_idx)))
-    print(y_unmon_idx, max(list(y_unmon_idx)))
-
-    sss = StratifiedShuffleSplit(n_splits=4, test_size=cst.TEST_PERCENTAGE, random_state=0)
-
-    X_mon = np.copy(X[y_mon_idx])
-    y_mon = np.copy(y[y_mon_idx])
-    X_unmon = np.copy(X[y_unmon_idx])
-    y_unmon = np.copy(y[y_unmon_idx])
-
-    splits_mon = list(sss.split(X_mon, y_mon))
-    splits_unmon = list(sss.split(X_unmon, y_unmon))
-
-    i = 0
-    while i < len(splits_mon):
-
-        train_index_mon, test_index_mon = splits_mon[i]
-        train_index_unmon, test_index_unmon = splits_unmon[i]
-
-        print("---")
-        print(train_index_mon, max(train_index_mon))
-        print(train_index_unmon, max(train_index_unmon))
-        print(test_index_mon, max(test_index_mon))
-        print(test_index_unmon, max(test_index_unmon))
-
-        train_index = np.union1d(train_index_mon, train_index_unmon)
-        test_index = np.union1d(test_index_mon, test_index_unmon)
-
-        print()
-        print(train_index, max(train_index))
-        print(test_index, max(test_index))
-
-        i += 1
-    
-    sys.exit(1)

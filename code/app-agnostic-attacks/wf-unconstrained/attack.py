@@ -6,7 +6,7 @@ import glob
 import os
 import lib.plot_builder as plot_builder
 
-INPUT_DIR = "datasets/"
+INPUT_DIR = "/data/features/"
 npys = glob.glob(INPUT_DIR + '*.npy', recursive=False)
 
 for npy_file in npys:

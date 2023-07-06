@@ -15,7 +15,7 @@ if True:
     sys.path.append("../lib")
     import utils
     import constants
-    import pcap_parsing_with_ip
+    import pcap_parsing
 
 FORCE_REBUILD = True
 NPY_SPLIT = 'summary_quic_tls_split.npy'
@@ -58,8 +58,8 @@ def create_npy_quic_and_tls_separated(folder, npy_path):
         label, quic = get_label(f)
         url, repeat = label
 
-        txt = pcap_parsing_with_ip.pcap_to_txt(f)
-        quic_records, tls_records = pcap_parsing_with_ip.text_to_timestamp_sizes_separate_quic_tls_traffic(txt)
+        txt = pcap_parsing.pcap_to_txt(f)
+        quic_records, tls_records = pcap_parsing.text_to_timestamp_sizes_separate_quic_tls_traffic(txt)
 
         summary[url][quic][repeat] = dict(quic=quic_records, tls=tls_records)
 

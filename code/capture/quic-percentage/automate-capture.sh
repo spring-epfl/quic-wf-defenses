@@ -12,13 +12,21 @@ cleanup() {
 }
 trap "cleanup" HUP INT TERM
 
-OUTPUT_FOLDER=dataset
+URL_FILE="${1}"
+BASE_OUTPUT_DIR="${2}"
+OUTPUT_FOLDER="${BASE_OUTPUT_DIR}/percentage"
 
+if [[ ! -f "${URL_FILE}" ]]
+then
+    echo "URL file does not exists."
+    exit 1
+fi
 
+mkdir -p "${OUTPUT_FOLDER}"
 
-while : 
+while :
 do
-    python3 firefox-quic-percentage.py urls "${OUTPUT_FOLDER}"
+    python3 firefox-quic-percentage.py "${URL_FILE}" "${OUTPUT_FOLDER}"
     exitcode="$?"
     if [ "${exitcode}" == 0 ]; then
         exit 0
@@ -27,7 +35,7 @@ do
     memkill
     echo "Sleep 10"
     sleep 10
-    find dataset -size 0 -delete
+    find "${OUTPUT_FOLDER}" -size 0 -delete
 done
 
 echo "All done."

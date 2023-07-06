@@ -1,15 +1,20 @@
 #!/bin/bash
-mkdir -p output
+
 #Read from urls file
-input="urls"
+INPUT_URLS="$1"
+OUTPUT_DIR="$2"
+NUM="$3"
 count=0
+
+mkdir -p "${OUTPUT_DIR}"
+
 while IFS= read -r line
 do
-  echo "Traceroute for: $line"
-  #Provide number of tracerts per domain as input
-  for i in $(seq 1 $1)
+  echo "Traceroute for: ${line}"
+  #Provide number of tracerts per domain as INPUT_URLS
+  for i in $(seq 1 "${NUM}")
   do
-  	traceroute $line > output/out$count\_$i.log 2>/dev/null
+  	traceroute "${line}" > "${OUTPUT_DIR}/out${count}_${i}.log" 2>/dev/null
   done
   count=$((count+1))
-done < "$input"
+done < "$INPUT_URLS"

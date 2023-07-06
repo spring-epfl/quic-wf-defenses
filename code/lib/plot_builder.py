@@ -7,7 +7,6 @@ from json import JSONEncoder
 import pandas as pd
 import os
 import json
-from tabulate import tabulate
 import subprocess
 import re
 from operator import itemgetter

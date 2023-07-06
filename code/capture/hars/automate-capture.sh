@@ -12,13 +12,13 @@ cleanup() {
 }
 trap "cleanup" HUP INT TERM
 
-OUTPUT_FOLDER=dataset
+URLS_FILE="${1}"
+OUTPUT_FOLDER="${2}"
 
 
-
-while : 
+while :
 do
-    python3 firefox-har-capture.py urls "${OUTPUT_FOLDER}"
+    python3 firefox-har-capture.py "${URLS_FILE}" "${OUTPUT_FOLDER}"
     exitcode="$?"
     if [ "${exitcode}" == 0 ]; then
         exit 0

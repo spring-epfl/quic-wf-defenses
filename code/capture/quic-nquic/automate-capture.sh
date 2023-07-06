@@ -14,7 +14,9 @@ cleanup() {
 trap "cleanup" HUP INT TERM
 
 CAPTURE_INTERFACE=veth1
-OUTPUT_FOLDER=dataset
+ROOT_DIR="/data/$(date +%Y%m%d)"
+INPUT_URLS="/data/urls_subset.txt"
+OUTPUT_FOLDER="${ROOT_DIR}/capture"
 
 # Choose 1 capture profiles
 
@@ -48,18 +50,6 @@ if [ $# == 2 ]; then
     done
 fi
 
-# test if in screen
-if [ "$STY" == "" ]; then
-    while true; do
-        read -p "You are not in \"screen\". note: this detection sometimes fails, try with screen -ls. Continue ? [yn] " yn
-        case $yn in
-            [Yy]* ) break;;
-            [Nn]* ) exit;;
-            * ) echo "Please answer [y]es or [n]o.";;
-        esac
-    done
-fi
-
 # Ensure we're in the correct netns
 if ! sudo ip link | grep "${CAPTURE_INTERFACE}"; then
     echo "Cannot find interface ${CAPTURE_INTERFACE}, are you in the correct network namespace?";
@@ -85,9 +75,9 @@ fi
 mkdir -p "${OUTPUT_FOLDER}"
 chmod ugo+rwx "${OUTPUT_FOLDER}" #tshark sometimes chokes on this
 
-realname=urls
-if [ `readlink urls` != "" ]; then
-    realname=`readlink urls`
+realname="${INPUT_URLS}"
+if [ `readlink "${INPUT_URLS}"` != "" ]; then
+    realname=`readlink ${INPUT_URLS}`
 fi
 
 count=-1
@@ -157,7 +147,7 @@ do
         fi
 
     done
-done < urls
+done < "${INPUT_URLS}"
 
 echo "All done."
 exit 0

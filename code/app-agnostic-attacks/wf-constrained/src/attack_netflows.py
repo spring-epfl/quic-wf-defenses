@@ -191,16 +191,16 @@ def run(dataset_npy):
 
     y_i, mapping = labels_strings_to_ids(y_str)
 
-    mapfile = 'plots/'+dataset_npy.replace('datasets/', '').replace('.npy', '.map.json')
-    with open(mapfile, 'w') as f:
-        print("Writting map", mapfile)
-        f.write(json.dumps(mapping))
+    # mapfile = 'plots/'+dataset_npy.replace('datasets/', '').replace('.npy', '.map.json')
+    # with open(mapfile, 'w') as f:
+    #     print("Writting map", mapfile)
+    #     f.write(json.dumps(mapping))
     y_i = np.array(y_i)
         
     print(f"Loaded {len(X)} rows, {len(feature_names)} feature names for {len(X[0])} features")
     score, features_and_percentages, y_test_all, y_pred_all = rf_folds(X, y_i, feature_names, rfe_nfeatures=cst.KF_RFE_NFEATURES_TO_SELECT, rfe_steps=cst.KF_RFE_STEPS, n_trees=cst.N_TREES)
 
-    plot_builder.confusion_matrix(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-cm", y_test_all, y_pred_all)
-    plot_builder.feature_importance(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-fi", features_and_percentages)
+    #plot_builder.confusion_matrix(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-cm", y_test_all, y_pred_all)
+    #plot_builder.feature_importance(dataset_npy.replace('datasets/', '').replace('.npy', '')+"-fi", features_and_percentages)
 
     return dict(score=score, features=features_and_percentages)

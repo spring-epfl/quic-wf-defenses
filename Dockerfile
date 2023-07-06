@@ -7,9 +7,13 @@ apt-get upgrade -y && \
 apt-get autoremove -y && \
 apt-get install -y \
 apt-transport-https \
+bison \
+byacc \
+build-essential \
 chromium \
 curl \
 firefox-esr \
+flex \
 g++ \
 gcc \
 git \
@@ -18,19 +22,29 @@ htop \
 inetutils-ping \
 iproute2 \
 iptables \
+libbz2-dev \
 libc6-dev \
+libffi-dev \
 liblapack-dev \
 libopenblas-dev \
+libpcap-dev \
 libssl-dev \
+libtool \
+liblz4-dev \
+libzstd-dev \
 locales \
+nano \
 net-tools \
 openjdk-11-jre \
+pkg-config \
 python3 \
 python3-dev \
 python3-venv \
 python3-pip \
+python3-wheel \
 rsync \
 sudo \
+tar \
 tcpdump \
 tmux \
 tree \
@@ -71,6 +85,7 @@ chardet==5.1.0 \
 charset-normalizer==3.1.0 \
 contourpy==1.0.7 \
 cycler==0.11.0 \
+dnspython==2.3.0 \
 exceptiongroup==1.1.1 \
 fonttools==4.39.4 \
 frozenlist==1.3.3 \
@@ -109,6 +124,7 @@ PyYAML==6.0 \
 requests==2.31.0 \
 requests-oauthlib==1.3.1 \
 rsa==4.9 \
+scapy==2.5.0 \
 scikit-learn==1.2.2 \
 scipy==1.10.1 \
 selenium==4.9.0 \
@@ -129,6 +145,28 @@ yarl==1.9.2 \
 zipp==3.15.0 \
 && echo 'Python dependencies installed!'
 
+RUN cd / && \
+git clone https://github.com/gnomikos/traIXroute.git && \
+cd traIXroute && \
+sed -i -e 's/cffi==1.7.0/cffi==1.15.0/' -e 's/pysubnettree==0.26/pysubnettree==0.35/' setup/requirements.txt && \
+python3 lib/traixroute/downloader/install_scamper.py && \
+python3 -m venv /venv && \
+. /venv/bin/activate && \
+python -m pip install wheel && \
+python -m pip install -r setup/requirements.txt && \
+echo 'traIXroute installed!'
+
+RUN cd /tmp && \
+git clone https://github.com/phaag/nfdump.git && \
+cd nfdump && \
+./autogen.sh && \
+./configure --enable-nfpcapd && \
+make && \
+make install && \
+cd / && \
+rm -rf /tmp/nfdump && \
+echo "nfpcapd installed!"
+
 # Configure locales
 RUN printf '%s\n' 'fr_CH.UTF-8 UTF-8' 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
 printf '%s\n' 'LANG="en_US.UTF-8"' 'LANGUAGE="en_US:en"' >> /etc/default/locale && \
@@ -138,5 +176,10 @@ echo "export VISIBLE=now" >> /etc/profile \
 && echo 'Configured locales'
 
 COPY ./code /quic-wf-defenses
+
+RUN useradd -m -u 1000 -U -G sudo,wireshark -s /bin/bash quicuser && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && chown -R quicuser /quic-wf-defenses
+
+
+USER quicuser
 
 ENTRYPOINT ["/bin/bash"]
