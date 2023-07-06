@@ -51,7 +51,59 @@ $ mv features.npy /data/features
 $ python3 attack.py
 ```
 
-The output .json file will contain the metrics of the classifier that can be compared against results in the paper. 
+The output .json file of the script above will contain the metrics of the classifier that can be compared against results in the paper. The output .json provides the number of classes, number of samples used, the accuracy/precision/recall/f1-score, and the features and their importances.
+
+Sample output:
+
+```
+{
+  "score": {
+    "n_classes": [
+      150,
+      0
+    ],
+    "min_n_samples": [
+      40,
+      0
+    ],
+    "max_n_samples": [
+      40,
+      0
+    ],
+    "accuracy": [
+      0.9576874999999999,
+      0.003649640868937959
+    ],
+    "precision": [
+      0.9589748018676456,
+      0.0038197502044932945
+    ],
+    "recall": [
+      0.9576874999999999,
+      0.003649640868937959
+    ],
+    "f1score": [
+      0.9573383071883479,
+      0.003813301379661153
+    ]
+  },
+  "features": [
+    [
+      "hist_1003",
+      0.04022462678877165,
+      0.0021000236270692224
+    ],
+    [
+      "hist_1337",
+      0.028745123751845597,
+      0.00114796525987474
+    ],
+    .
+    .
+    .
+    .
+}
+```
 
 All the other scripts in the different folders are for scenarios that are variations of this main scenario. Adjust the pipeline based on the scenario you want to analyze. 
 
