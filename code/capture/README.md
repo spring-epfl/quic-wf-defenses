@@ -137,7 +137,7 @@ $ bash automate-capture.sh
 
 ## Capture HAR Files of Websites
 
-We provided a script to extract HAR data from scrapped websites.
+We provided a script to extract HAR data from scraped websites.
 
 ```
 $ cd /quic-wf-defenses/capture/hars
@@ -145,7 +145,7 @@ $ mkdir "/data/$(date +%Y%m%d)/hars"
 $ bash automate-capture.sh /data/urls_subset.txt "/data/$(date +%Y%m%d)/hars"
 ```
 
-## Scrap Links of Sub-pages
+## Scrape Links of Sub-pages
 
 We provide a script to do a simple links extraction from a website.
 
@@ -189,7 +189,7 @@ where URLS is a file containing the URLs you want to traceroute, OUTPUT_DIR is t
 
 In our Section 4 (constrained adversary) experiments, we have to create different 'views' of the traffic based on the AS they pass through. In order to do this, we have to know which resource network traffic passes through which AS, and create partial traces for them. We can do this using the following steps:
 
-1. Run a HAR capture in **capture/har-capture**.
-2. Run **parse-hars.py** to create a directory of URLs for each website visit.
+1. Run a HAR capture in **capture/hars**.
+2. Run **traceroutes/parse-hars.py** to create a directory of URLs for each website visit.
 3. Run **run-traixroute-har.sh** on the directory of URLS to obtain traceroutes.
 4. Use the scripts in **processing-scripts** to create partial traces. The scripts take in full PCAPS, traceroutes, HAR files, and specified AS, and outputs PCAPS with only traffic passing through that AS.

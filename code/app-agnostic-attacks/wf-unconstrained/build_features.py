@@ -23,7 +23,7 @@ def main(program, args):
         "--input",
         type=str,
         help="Folder path containing NPY traces.",
-        default="quic-100p-150/"
+        default="/data/"
     )
     parser.add_argument(
         "--output",
