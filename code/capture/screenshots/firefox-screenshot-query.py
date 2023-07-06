@@ -15,7 +15,7 @@ from os import path
 import random
 import shutil
 
-PROFILE_QUIC = '../quic-nquic-capture/prefs_quic.js'
+PROFILE_QUIC = '../quic-nquic/prefs_quic.js'
 PROFILE_URL = "./profile"
  
 if len(sys.argv) != 3:
