@@ -10,5 +10,5 @@ import itertools
 INPUT_DIRECTORY_TAG = "datasets/exp2_"
 json_file = 'het_exp2.json'
 
-results = attack.run(path)
+results = attack.run(INPUT_DIRECTORY_TAG)
 #plot_builder.serialize(json_file, results)
