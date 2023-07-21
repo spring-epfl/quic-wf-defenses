@@ -38,7 +38,7 @@ def read_folder(har_folder):
     for har_filename in har_fnames_full:
 
         site_name = har_filename.replace(har_folder, '')[:-4] # remove .har
-        
+
         data = []
         try:
             with open(har_filename) as f:
@@ -51,7 +51,7 @@ def read_folder(har_folder):
         if len(data) == 0:
             continue
 
-        start_time = data[0]['time']  
+        start_time = data[0]['time']
 
         for e in data:
             if e['status'] == 0:
@@ -91,7 +91,7 @@ def read_folder(har_folder):
             sites[site_name].append(formattedHar)
 
     return sites
-    
+
 
 HAR_FOLDER = 'quic-100p-150-40runs/'
 URL_FILE = 'quic-100p-150.txt'
@@ -105,26 +105,26 @@ with open(URL_FILE) as f:
 all_data = dict()
 
 for subdir in ["dataset_adblock", "dataset_both", "dataset_nofilter", "dataset_decentraleyes"]:
-    
+
     subdir_key = subdir.replace('dataset_', '')
 
     all_data[subdir_key] = dict()
 
     for i in range(1, 41):
-        if not os.path.isdir(f"{FOLDER}loop_{i}/{subdir}"):
-            print(f"Skipping {FOLDER}loop_{i}/{subdir}")
+        if not os.path.isdir(f"{HAR_FOLDER}loop_{i}/{subdir}"):
+            print(f"Skipping {HAR_FOLDER}loop_{i}/{subdir}")
             continue
 
-        print(f"{FOLDER}loop_{i}/{subdir}")
+        print(f"{HAR_FOLDER}loop_{i}/{subdir}")
 
-        sites = read_folder(f"{FOLDER}loop_{i}/{subdir}/")
+        sites = read_folder(f"{HAR_FOLDER}loop_{i}/{subdir}/")
 
         j = 0
         for site in sites:
             if site not in urls_filters:
                 print("Skipping", site)
                 continue
-        
+
             if site not in all_data[subdir_key]:
                 all_data[subdir_key][site] = dict()
             all_data[subdir_key][site][str(i)] = sites[site]
