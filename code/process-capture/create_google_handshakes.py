@@ -19,7 +19,7 @@ def parallel(files, function, n_jobs=20):
     return data_dict
 
 def get_destination(folder):
-    return folder.replace('../../cf-clusters-datasets/', '.pcaps/')
+    return folder.replace('/data/', '.pcaps/')
 
 def process_pcap(pcap_in):
     global google_ips, google_domains
@@ -49,7 +49,7 @@ def process_pcap(pcap_in):
 
 
 
-dataset_path = '../../cf-clusters-datasets/quic-100p-150-google/pcaps/'
+dataset_path = '/data/google-pcaps/'
 pcaps = glob(dataset_path + '**/capture.pcap', recursive=True)
 parallel(pcaps, process_pcap, n_jobs=8)
 print("Done creating individual .npy's.")

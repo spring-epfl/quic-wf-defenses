@@ -2,6 +2,17 @@
 
 Artifact release for the paper "Evaluating practical QUIC website fingerprinting defenses for the masses" (PETS 2023).
 
+### Description
+
+The goal of the artifact is to show website-fingerprinting defenses on QUIC traffic. The artifact performs two types of defenses using padding (apply QUIC PADDING frames to packets): application-agnostic and application-aware. The former is a purely network-layer defense that does not take application-layer data (such as total size of websites) into account. The latter considers application-layer data when performing the defense. In application-agnostic defenses, the artifact also consists of scenarios where a website-fingerprinting adversary is limited and does not have the entire network trace to perform an attack. We consider two cases of a limited adversary -- one where they have limited visibility (so partial network traces) and one where they have limited processing capability (so they perform the attack on sampled Netflows instead of full traffic).
+
+The artifact consists of the following:
+
+1. A capture setup to capture QUIC traffic given a set of websites. 
+2. A setup to extract features and run a website-fingerprinting attack using random forests. The attack can be run either with a powerful adversary or a limited adversary.
+3. A setup for website-fingerprinting defenses in an application-agnostic scenario.
+4. A setup for webssite-fingerprinting defenses in an application-aware scenario.
+
 ### Code Organization
 
 The code is organized in the following folders:

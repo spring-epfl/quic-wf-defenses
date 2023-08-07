@@ -22,7 +22,9 @@ INPUT_DIR = 'netflow_npys/'
 OUTPUT_FILE = 'netflow_undefended.npy'
 
 build_if_not_exists(INPUT_DIR, OUTPUT_FILE, defense=None)
-build_if_not_exists(INPUT_DIR, OUTPUT_FILE, lambda X: kffeatures_netflows.defend_nototalsize(X, paddedPackets=3*10**4, paddedBytes=23*10**6))
+
+#To apply a defense for 1% sampling rate
+#build_if_not_exists(INPUT_DIR, OUTPUT_FILE, lambda X: kffeatures_netflows.defend_nototalsize(X, paddedPackets=3*10**4, paddedBytes=23*10**6))
 
 #For other sampling rates
 #10%

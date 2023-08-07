@@ -35,7 +35,7 @@ We have the following script using trAIxroute:
 
 In our Section 4 (constrained adversary) experiments, we have to create different 'views' of the traffic based on the AS they pass through. In order to do this, we have to know which resource network traffic passes through which AS, and create partial traces for them. We can do this using the following steps:
 
-1. Run a HAR capture in **capture/har-capture**.
+1. Run a HAR capture in **capture/hars**.
 2. Run **parse-hars.py** to create a directory of URLs for each website visit.
 3. Run **run-traixroute-har.sh** on the directory of URLS to obtain traceroutes.
 4. Use the scripts in **processing-scripts** to create partial traces. The scripts take in full PCAPS, traceroutes, HAR files, and specified AS, and outputs PCAPS with only traffic passing through that AS. 
