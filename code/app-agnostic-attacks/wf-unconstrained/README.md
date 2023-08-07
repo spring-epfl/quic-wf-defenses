@@ -15,3 +15,21 @@ The code consists of the following scripts:
 4. **attack_het.py** is the same as attack.py but is used in the heteroeneous experiment (where the sub-pages are different). Provide the input directory (line 10) and run the script. 
 
 The directory **src/** contains helper files for performing feature extraction and classification. 
+
+### Running the code
+
+Extract features from the .npy folder. This results in a .npy feature file. --defense can be one of 5 options: none, nosize, nototalsize, notiming, nosizetiming (none = no defese, nosize = sizes hidden, nototalsize = total size hidden, notiming = timing hidden, nosizetiming = size and timing hidden)
+
+```
+$ python3 build_features.py --input /data/ --output features.npy --defense none
+```
+
+Run the attack to perform 10-fold cross-validation on the feature file. This results in a .json file with the results. Note that you need to create a directory to put your feature file in and then modify attack.py to input the path to the directory before running it.
+
+```
+$ mkdir /data/features
+$ mv features.npy /data/features
+$ python3 attack.py
+```
+
+Similarly, modify attack_cross.py and attack_het.py 
