@@ -1,6 +1,6 @@
 # app-agnostic-attacks
 
-This folder contains the code to run application-agnostic WF attacks (Section 4). Before running this code, ensure that you have collected trace files of the websites using the code in **capture/**. Also run the code in **process-capture/** to obtain the processed .npy files. Please check Steps 1 and 2 of the pipeline [here](https://github.com/spring-epfl/quic-wf-defenses/blob/corrections/code/README.md) to perform these steps.  
+This folder contains the code to run application-agnostic WF attacks (Section 4). Before running this code, ensure that you have collected trace files of the websites using the code in **capture/**. Also run the code in **process-capture/** to obtain the processed .npy files. Please check Steps 1 and 2 of the pipeline [here](https://github.com/spring-epfl/quic-wf-defenses/blob/main/code/README.md) to perform these steps.  
 
 The code consists of the following folders (each folder has a README file describing the code in it):
 
