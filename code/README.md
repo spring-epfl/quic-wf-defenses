@@ -147,7 +147,7 @@ $ python3 parse-hars.py /data/$(date +%Y%m%d)/hars /data/$(date +%Y%m%d)/process
 
 4. Run traceroutes:
 
-Follow instructions in capture/ README ([here](https://github.com/spring-epfl/quic-wf-defenses/tree/corrections/code/capture#traceroute-experiments)) to set up a virtual environment and run the capture. Use the output from Step 2 as input for the traceroutes.
+Follow instructions in capture/ README ([here](https://github.com/spring-epfl/quic-wf-defenses/tree/main/code/capture#traceroute-experiments)) to set up a virtual environment and run the capture. Use the output from Step 2 as input for the traceroutes.
 
 5. Obtain filtered traces: 
 
@@ -182,7 +182,7 @@ $ python3 parse_pcaps_into_netflows.py /data/pcaps/
 3. The previous step generates a folder of NetFlows in /data/netflows/. Convert the NetFLows into .npy files:
 
 ```
-$ python3 parse_netflows_into_npys.data /data/netflows/
+$ python3 parse_netflows_into_npys.py /data/netflows/
 ```
 
 4. Extract features by running wf-constrained/build_features_netflows.py. Change lines 21 and 22 to put the paths of the input and output files. Lines 24-35 indicate how to run the attack under different sampling and defense conditions, uncomment as desired. 
@@ -206,7 +206,7 @@ So far, we conducted the attacks using an application-agnostic defender. We also
 
 Please run the following pipeline:
 
-1. Run the code in capture/ to obtain the HAR files (follow the instructions [here](https://github.com/spring-epfl/quic-wf-defenses/tree/corrections/code/capture#capture-har-files-of-websites)). 
+1. Run the code in capture/ to obtain the HAR files (follow the instructions [here](https://github.com/spring-epfl/quic-wf-defenses/tree/main/code/capture#capture-har-files-of-websites)). 
 
 2. Process the HAR files by running process-capture/parse_hars_into_npy.py. Modify lines 96-98 to provide paths to the HAR directory, URL list, and your desired output path. 
 
@@ -219,11 +219,11 @@ The output of this step will be a single .npy file which you can use as input in
 
 3. We provide three notebooks showing how various attacks and defenses can be run on the processed HAR data. These notebooks are in app-aware-attacks/, run the steps as indicated in the notebooks:
 
-a. [attack_by_parties.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/corrections/code/app-aware-attacks/attack_by_parties.ipynb): runs the attacks on traces filtered by first-party, third-party, and Google resources (Section 5.2.2 of the paper).
+a. [attack_by_parties.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/main/code/app-aware-attacks/attack_by_parties.ipynb): runs the attacks on traces filtered by first-party, third-party, and Google resources (Section 5.2.2 of the paper).
 
-b. [defense-pad.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/corrections/code/app-aware-attacks/defense-pad.ipynb): runs the attacks on a defense that pads local sizes (Section 5.2.3 local of the paper).  
+b. [defense-pad.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/main/code/app-aware-attacks/defense-pad.ipynb): runs the attacks on a defense that pads local sizes (Section 5.2.3 local of the paper).  
 
-c. [defense-padtotal.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/corrections/code/app-aware-attacks/defense-padtotal.ipynb): runs the attacks on a defense that pads global sizes (Section 5.2.3 global of the paper).
+c. [defense-padtotal.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/main/code/app-aware-attacks/defense-padtotal.ipynb): runs the attacks on a defense that pads global sizes (Section 5.2.3 global of the paper).
 
-d. [defense-dummies.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/corrections/code/app-aware-attacks/defense-dummies.ipynb): runs the attacks on a defense that adds dummies (Section 5.2.3 dummies of the paper).
+d. [defense-dummies.ipynb](https://github.com/spring-epfl/quic-wf-defenses/blob/main/code/app-aware-attacks/defense-dummies.ipynb): runs the attacks on a defense that adds dummies (Section 5.2.3 dummies of the paper).
 
